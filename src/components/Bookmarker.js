@@ -1,6 +1,6 @@
 /*global chrome*/
 
-import "./Extra.css";
+import "./Bookmarker.css";
 
 import { useEffect, useState } from "react";
 import getYouTubeID from "get-youtube-id";
