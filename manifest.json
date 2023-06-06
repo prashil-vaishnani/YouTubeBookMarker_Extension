@@ -1,0 +1,16 @@
+{
+  "name": "Bookmarker_YT",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "YouTube Bookmarker By Prashil Vaishnani",
+  "permissions": ["tabs", "bookmarks", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_icon": "logo192.png",
+    "default_title": "I am Bookmarker",
+    "default_popup": "index.html"
+  }
+}
