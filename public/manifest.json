@@ -3,7 +3,8 @@
   "version": "1.0",
   "manifest_version": 3,
   "description": "YouTube Bookmarker By Prashil Vaishnani",
-  "permissions": ["tabs", "bookmarks"],
+  "permissions": ["tabs", "bookmarks", "scripting"],
+  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
   },
