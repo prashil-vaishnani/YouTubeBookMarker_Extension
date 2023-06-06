@@ -1,15 +1,16 @@
 /*global chrome*/
 
-import "./Bookmarker.css";
-
 import { useEffect, useState } from "react";
-import getYouTubeID from "get-youtube-id";
-var getYoutubeTitle = require("get-youtube-title-await");
+import "./Bookmarker.css";
+import {
+  convertTimeToSeconds,
+  extractYouTubeVideoData,
+  extractEmbedVideoUrl,
+} from "../utils/Helper";
 
 const Bookmarker = ({ parentId }) => {
   const [items, setItems] = useState([]);
   const [change, setChange] = useState(false);
-
   useEffect(() => {
     chrome.bookmarks.getSubTree(parentId, function (bookmarks) {
       setItems([...bookmarks[0].children]);
@@ -43,7 +44,7 @@ const Bookmarker = ({ parentId }) => {
         <h2>Bookmarker</h2>
         <button
           className="btn"
-          onClick={() => {
+          onClick={async () => {
             chrome.tabs.query(
               {
                 active: true,
@@ -62,15 +63,26 @@ const Bookmarker = ({ parentId }) => {
                     title: "youtube home page",
                   });
                 } else {
-                  let id = getYouTubeID(url);
-                  getYoutubeTitle(
-                    id,
-                    "AIzaSyBazFarwuclT11lJyIxNvqhhtjEDxxXy9o",
-                    function (err, title) {
+                  chrome.scripting.executeScript(
+                    {
+                      target: { tabId: tabs[0].id },
+                      function: extractYouTubeVideoData,
+                      args: [{ url: url }],
+                    },
+                    (results) => {
+                      const { title, timestamp } = results[0].result;
+                      let getUrl =
+                        extractEmbedVideoUrl(url) +
+                        "?start=" +
+                        convertTimeToSeconds(timestamp);
+                      if (checkUrl(getUrl)) {
+                        alert("This Link is already exists");
+                        return;
+                      }
                       chrome.bookmarks.create({
                         parentId: parentId,
-                        url: url,
-                        title: title,
+                        url: getUrl,
+                        title: `${title} - ${timestamp}`,
                       });
                     }
                   );
